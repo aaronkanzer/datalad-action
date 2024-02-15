@@ -20,10 +20,23 @@ git config --global --add user.email  "${email}"
 
 python3 -m pip install --upgrade pip
 
-# Install git annex
-python3 -m pip install datalad-installer
+# Determine OS and install git annex accordingly
+# Runners done on different machines, such as EC2 Runners with Debian, are designed to use apt-get to install git-annex
+# See: https://git-annex.branchable.com/install/
+#
+# DEBIAN_FRONTEND=noninteractive is set to noninteractive in order to avoid an EOF failure due
+# to lack of ability to enter input
+if [ -f "/etc/debian_version" ] || grep -q 'Ubuntu' "/etc/os-release"; then
+    echo "Detected Debian/Ubuntu, installing git-annex using apt-get..."
+    export DEBIAN_FRONTEND=noninteractive
+    sudo apt-get update
+    sudo apt-get install -y git-annex
+else
+    echo "Non Debian/Ubuntu system detected, installing git-annex using pip..."
+    python3 -m pip install datalad-installer
+    datalad-installer --sudo ok git-annex
+fi
 
-datalad-installer --sudo ok git-annex
 git config --global filter.annex.process "git-annex filter-process"
 
 # Ensure git annex added to path
