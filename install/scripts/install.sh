@@ -27,12 +27,12 @@ python3 -m pip install --upgrade pip
 # DEBIAN_FRONTEND=noninteractive is set to noninteractive in order to avoid an EOF failure due
 # to lack of ability to enter input
 if [ -f "/etc/debian_version" ] || grep -q 'Ubuntu' "/etc/os-release"; then
-    echo "Detected Debian/Ubuntu, installing git-annex using apt-get..."
+    echo "Detected Debian/Ubuntu, installing git-annex directly using apt-get..."
     export DEBIAN_FRONTEND=noninteractive
     sudo apt-get update
     sudo apt-get install -y git-annex
 else
-    echo "Non Debian/Ubuntu system detected, installing git-annex using pip..."
+    echo "Non Debian/Ubuntu system detected, installing git-annex directly using datalad-installer"
     python3 -m pip install datalad-installer
     datalad-installer --sudo ok git-annex
 fi
